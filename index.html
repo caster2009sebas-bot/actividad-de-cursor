@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Tienda Tech - Computadoras y Accesorios</title>
+	<meta name="description" content="Venta de computadoras, laptops y accesorios informáticos. Mejores precios y envío rápido." />
+	<link rel="stylesheet" href="assets/styles.css" />
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'><text y='1em' font-size='96'>💻</text></svg>">
+</head>
+<body>
+	<header class="site-header">
+		<div class="container header-inner">
+			<a class="brand" href="index.html">SG.<span>TECNOLOGY</span></a>
+			<nav class="main-nav" aria-label="Principal">
+				<a class="nav-link" href="index.html">Inicio</a>
+				<a class="nav-link" href="servicio.html">Servicio</a>
+				<a class="nav-link" href="quienes-somos.html">Quiénes somos</a>
+				<a class="nav-link" href="contacto.html">Contacto</a>
+				<a class="nav-link" href="portafolio.html">Portafolio</a>
+				<a class="nav-link hide" data-role="admin-link" href="admin.html">Admin</a>
+				<button id="openCartBtn" class="btn icon-btn" aria-label="Abrir carrito" title="Carrito">
+					<span class="icon">🛒</span>
+					<span id="cartCount" class="badge" aria-live="polite">0</span>
+				</button>
+			</nav>
+		</div>
+	</header>
+
+	<main>
+		<section class="hero">
+			<div class="container hero-inner">
+				<div class="hero-copy">
+					<h1>Computadoras y cosas informáticas</h1>
+					<p>Explora nuestra selección de PCs, laptops, monitores y accesorios. Garantía oficial y soporte experto.</p>
+					<div class="hero-actions">
+						<a href="#catalogo" class="btn primary">Ver catálogo</a>
+						<button class="btn" id="verOfertasBtn">Ofertas</button>
+					</div>
+				</div>
+				<div class="hero-art" aria-hidden="true">💻⚡</div>
+			</div>
+		</section>
+
+		<section id="filtros" class="filters">
+			<div class="container filters-grid">
+				<label class="field">
+					<span class="label">Buscar</span>
+					<input type="search" id="searchInput" placeholder="Buscar producto..." />
+				</label>
+				<label class="field">
+					<span class="label">Categoría</span>
+					<select id="categorySelect">
+						<option value="">Todas</option>
+						<option value="pc">PCs</option>
+						<option value="laptop">Laptops</option>
+						<option value="monitor">Monitores</option>
+						<option value="periferico">Periféricos</option>
+						<option value="almacenamiento">Almacenamiento</option>
+						<option value="memoria">Memoria RAM</option>
+					</select>
+				</label>
+				<label class="field">
+					<span class="label">Ordenar</span>
+					<select id="sortSelect">
+						<option value="relevancia">Relevancia</option>
+						<option value="precio-asc">Precio: menor a mayor</option>
+						<option value="precio-desc">Precio: mayor a menor</option>
+					</select>
+				</label>
+			</div>
+			<div class="container" style="margin-top:10px;">
+				<div id="categoryChips" class="chips"></div>
+			</div>
+		</section>
+
+		<section id="catalogo" class="catalog">
+			<div class="container">
+				<h2 class="section-title">Catálogo</h2>
+				<div id="productsGrid" class="products-grid" aria-live="polite"></div>
+			</div>
+		</section>
+
+		<section class="features">
+			<div class="container features-grid">
+				<div class="feature">
+					<div class="feature-icon">🚚</div>
+					<h3>Envío rápido</h3>
+					<p>Envíos en 24-48h a todo el país.</p>
+				</div>
+				<div class="feature">
+					<div class="feature-icon">🛡️</div>
+					<h3>Garantía oficial</h3>
+					<p>Productos nuevos, sellados, con garantía.</p>
+				</div>
+				<div class="feature">
+					<div class="feature-icon">🤝</div>
+					<h3>Soporte experto</h3>
+					<p>Te asesoramos antes y después de tu compra.</p>
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<footer class="site-footer">
+		<div class="container footer-grid">
+			<div>
+				<strong>SG.TECNOLOGY</strong>
+				<p>Computadoras y accesorios informáticos.</p>
+			</div>
+			<nav aria-label="Legal">
+				<a href="#">Términos</a>
+				<a href="#">Privacidad</a>
+				<a href="https://instagram.com/" target="_blank" rel="noopener">Instagram</a>
+			</nav>
+		</div>
+	</footer>
+
+	<script src="https://www.paypal.com/sdk/js?client-id=sb&currency=USD" defer></script>
+	<script src="assets/site.js" defer></script>
+	<script src="assets/app.js" defer></script>
+</body>
+</html>

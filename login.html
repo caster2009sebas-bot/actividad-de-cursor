@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Entrar - Tienda Tech</title>
+	<link rel="stylesheet" href="assets/styles.css" />
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+	<header class="site-header">
+		<div class="container header-inner">
+			<a class="brand" href="index.html">SG.<span>TECNOLOGY</span></a>
+			<nav class="main-nav" aria-label="Principal">
+				<a class="nav-link" href="index.html">Inicio</a>
+				<a class="nav-link" href="servicio.html">Servicio</a>
+				<a class="nav-link" href="quienes-somos.html">Quiénes somos</a>
+				<a class="nav-link" href="contacto.html">Contacto</a>
+				<a class="nav-link hide" data-role="admin-link" href="admin.html">Admin</a>
+			</nav>
+		</div>
+	</header>
+
+	<main>
+		<section class="catalog">
+			<div class="container" style="max-width:560px;">
+				<h1 class="section-title">Entrar</h1>
+				<form id="loginForm" class="card" style="padding:16px; display:grid; gap:12px;">
+					<label class="field">
+						<span class="label">Correo</span>
+						<input type="email" id="correo" required />
+					</label>
+					<label class="field">
+						<span class="label">Contraseña</span>
+						<input type="password" id="password" required />
+					</label>
+					<div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+						<button class="btn primary" type="submit">Entrar</button>
+						<a class="nav-link" href="registro.html">Crear cuenta</a>
+					</div>
+					<span id="loginMsg" class="label" aria-live="polite"></span>
+				</form>
+			</div>
+		</section>
+	</main>
+
+	<footer class="site-footer">
+		<div class="container footer-grid">
+			<div>
+				<strong>Tienda Tech</strong>
+				<p>Computadoras y accesorios informáticos.</p>
+			</div>
+			<nav aria-label="Legal">
+				<a href="#">Términos</a>
+				<a href="#">Privacidad</a>
+				<a href="#">Contacto</a>
+			</nav>
+		</div>
+	</footer>
+
+	<script src="assets/site.js" defer></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+			const form = document.getElementById('loginForm');
+			const msg = document.getElementById('loginMsg');
+			form.addEventListener('submit', (e) => {
+				e.preventDefault();
+				const correo = document.getElementById('correo').value.trim();
+				const password = document.getElementById('password').value.trim();
+				try {
+					window.TiendaTech.loginUser({ email: correo, password });
+					location.href = 'panel.html';
+				} catch (err) {
+					msg.textContent = err.message || 'Error al iniciar sesión';
+					msg.style.color = '#fca5a5';
+				}
+			});
+		});
+	</script>
+</body>
+</html>

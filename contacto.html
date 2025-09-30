@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Contacto - Tienda Tech</title>
+	<link rel="stylesheet" href="assets/styles.css" />
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+	<header class="site-header">
+		<div class="container header-inner">
+			<a class="brand" href="index.html">SG.<span>TECNOLOGY</span></a>
+			<nav class="main-nav" aria-label="Principal">
+				<a class="nav-link" href="index.html">Inicio</a>
+				<a class="nav-link" href="servicio.html">Servicio</a>
+				<a class="nav-link" href="quienes-somos.html">Quiénes somos</a>
+				<a class="nav-link" href="contacto.html">Contacto</a>
+				<a class="nav-link hide" data-role="admin-link" href="admin.html">Admin</a>
+			</nav>
+		</div>
+	</header>
+
+	<main>
+		<section class="catalog">
+			<div class="container">
+				<h1 class="section-title">Contacto</h1>
+				<p class="label" style="margin-bottom:14px">Envíanos un mensaje y te responderemos pronto.</p>
+
+				<form id="contactForm" class="card" style="padding:16px; display:grid; gap:12px; max-width:680px;">
+					<label class="field">
+						<span class="label">Nombre</span>
+						<input type="text" id="nombre" required placeholder="Tu nombre" />
+					</label>
+					<label class="field">
+						<span class="label">Correo</span>
+						<input type="email" id="correo" required placeholder="tucorreo@ejemplo.com" />
+					</label>
+					<label class="field">
+						<span class="label">Asunto</span>
+						<input type="text" id="asunto" required placeholder="Tema del mensaje" />
+					</label>
+					<label class="field">
+						<span class="label">Mensaje</span>
+						<textarea id="mensaje" required placeholder="Cuéntanos en qué podemos ayudarte" rows="5" style="resize:vertical; padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,.12); background:#0b1222; color:var(--text);"></textarea>
+					</label>
+					<div style="display:flex; gap:10px; align-items:center;">
+						<button class="btn primary" type="submit">Enviar</button>
+						<span id="formMsg" class="label" aria-live="polite"></span>
+					</div>
+				</form>
+			</div>
+		</section>
+	</main>
+
+	<footer class="site-footer">
+		<div class="container footer-grid">
+			<div>
+				<strong>Tienda Tech</strong>
+				<p>Computadoras y accesorios informáticos.</p>
+			</div>
+			<nav aria-label="Legal">
+				<a href="#">Términos</a>
+				<a href="#">Privacidad</a>
+				<a href="#">Contacto</a>
+			</nav>
+		</div>
+	</footer>
+
+	<script src="assets/site.js" defer></script>
+	<script>
+		const form = document.getElementById('contactForm');
+		const msg = document.getElementById('formMsg');
+		form.addEventListener('submit', (e) => {
+			e.preventDefault();
+			const nombre = document.getElementById('nombre').value.trim();
+			const correo = document.getElementById('correo').value.trim();
+			const asunto = document.getElementById('asunto').value.trim();
+			const mensaje = document.getElementById('mensaje').value.trim();
+
+			if (!nombre || !correo || !asunto || !mensaje) {
+				msg.textContent = 'Por favor completa todos los campos.';
+				msg.style.color = '#fca5a5';
+				return;
+			}
+			const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo);
+			if (!emailOk) {
+				msg.textContent = 'Ingresa un correo válido.';
+				msg.style.color = '#fca5a5';
+				return;
+			}
+
+			msg.textContent = '¡Gracias! Responderemos pronto.';
+			msg.style.color = '#34d399';
+			form.reset();
+		});
+	</script>
+</body>
+</html>

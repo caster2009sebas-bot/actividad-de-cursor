@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Panel - Tienda Tech</title>
+	<link rel="stylesheet" href="assets/styles.css" />
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+	<header class="site-header">
+		<div class="container header-inner">
+			<a class="brand" href="index.html">SG.<span>TECNOLOGY</span></a>
+			<nav class="main-nav" aria-label="Principal">
+				<a class="nav-link" href="index.html">Inicio</a>
+				<a class="nav-link" href="servicio.html">Servicio</a>
+				<a class="nav-link" href="quienes-somos.html">Quiénes somos</a>
+				<a class="nav-link" href="contacto.html">Contacto</a>
+				<a class="nav-link hide" data-role="admin-link" href="admin.html">Admin</a>
+			</nav>
+		</div>
+	</header>
+
+	<main>
+		<section class="catalog">
+			<div class="container">
+				<h1 class="section-title">Mi panel</h1>
+				<div id="panelInfo" class="label" style="margin-bottom:14px"></div>
+				<form id="profileForm" class="card" style="padding:16px; display:grid; gap:12px; max-width:560px; margin-bottom:14px;">
+					<label class="field">
+						<span class="label">Nombre</span>
+						<input type="text" id="pfNombre" />
+					</label>
+					<label class="field">
+						<span class="label">Avatar (imagen)</span>
+						<input type="file" id="pfAvatar" accept="image/*" />
+					</label>
+					<div style="display:flex; gap:10px; align-items:center;">
+						<button class="btn primary" type="submit">Guardar perfil</button>
+						<span id="pfMsg" class="label" aria-live="polite"></span>
+					</div>
+				</form>
+				<div class="products-grid" id="panelProducts"></div>
+			</div>
+		</section>
+	</main>
+
+	<footer class="site-footer">
+		<div class="container footer-grid">
+			<div>
+				<strong>Tienda Tech</strong>
+				<p>Computadoras y accesorios informáticos.</p>
+			</div>
+			<nav aria-label="Legal">
+				<a href="#">Términos</a>
+				<a href="#">Privacidad</a>
+				<a href="#">Contacto</a>
+			</nav>
+		</div>
+	</footer>
+
+	<script src="assets/site.js" defer></script>
+	<script src="assets/app.js" defer></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+			const s = window.TiendaTech.getSession();
+			if (!s) { location.href = 'login.html'; return; }
+			document.getElementById('panelInfo').textContent = `Sesión: ${s.name} (${s.email})`;
+			// Prefill
+			document.getElementById('pfNombre').value = s.name || '';
+			// Handle profile save
+			document.getElementById('profileForm').addEventListener('submit', async (e) => {
+				e.preventDefault();
+				const name = document.getElementById('pfNombre').value.trim();
+				const file = document.getElementById('pfAvatar').files[0];
+				let avatarUrl;
+				if (file) {
+					avatarUrl = await new Promise(res => { const r = new FileReader(); r.onload = () => res(r.result); r.readAsDataURL(file); });
+				}
+				window.TiendaTech.updateProfile({ name, avatarUrl });
+				document.getElementById('pfMsg').textContent = 'Perfil actualizado';
+				document.getElementById('pfMsg').style.color = '#34d399';
+			});
+
+			// Render products using existing renderer
+			if (typeof renderProducts === 'function') {
+				const originalGrid = document.getElementById('productsGrid');
+				const panelGrid = document.getElementById('panelProducts');
+				if (panelGrid) {
+					window._oldGrid = originalGrid;
+					window.productsGrid = panelGrid;
+					renderProducts();
+				}
+			}
+		});
+	</script>
+</body>
+</html>

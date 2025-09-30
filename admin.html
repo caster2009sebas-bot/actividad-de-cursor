@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Admin - Tienda Tech</title>
+	<link rel="stylesheet" href="assets/styles.css" />
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+	<header class="site-header">
+		<div class="container header-inner">
+			<a class="brand" href="index.html">SG.<span>TECNOLOGY</span></a>
+			<nav class="main-nav" aria-label="Principal">
+				<a class="nav-link" href="index.html">Inicio</a>
+				<a class="nav-link" href="servicio.html">Servicio</a>
+				<a class="nav-link" href="quienes-somos.html">Quiénes somos</a>
+				<a class="nav-link" href="contacto.html">Contacto</a>
+				<a class="nav-link" href="admin.html">Admin</a>
+			</nav>
+		</div>
+	</header>
+
+	<main>
+		<section class="catalog">
+			<div class="container">
+				<h1 class="section-title">Panel de administración</h1>
+				<div id="adminInfo" class="label" style="margin-bottom:14px"></div>
+
+				<div class="stats">
+					<div class="stat"><div class="label">Ventas (USD)</div><div id="stSales" class="value">$0</div></div>
+					<div class="stat"><div class="label">Órdenes</div><div id="stOrders" class="value">0</div></div>
+					<div class="stat"><div class="label">Usuarios</div><div id="stUsers" class="value">0</div></div>
+				</div>
+
+				<div class="field" style="margin-bottom:10px;">
+					<span class="label">Buscar (usuarios, órdenes, actividad)</span>
+					<input type="search" id="adminSearch" placeholder="Buscar..." />
+				</div>
+
+				<div class="features-grid" style="margin-bottom:18px;">
+					<div class="feature">
+						<div class="feature-icon">📦</div>
+						<h3>Órdenes</h3>
+						<div id="ordersList" class="label"></div>
+					</div>
+					<div class="feature">
+						<div class="feature-icon">📜</div>
+						<h3>Actividad</h3>
+						<div id="activityList" class="label"></div>
+					</div>
+					<div class="feature">
+						<div class="feature-icon">👤</div>
+						<h3>Usuarios</h3>
+						<div id="usersList" class="label"></div>
+					</div>
+					<div class="feature">
+						<div class="feature-icon">🎬</div>
+						<h3>Media de productos (solo admin)</h3>
+						<form id="mediaForm" class="card" style="padding:12px; display:grid; gap:8px;">
+							<label class="field"><span class="label">ID de producto</span><input id="mfId" placeholder="ej: pc-101" /></label>
+							<label class="field"><span class="label">Imagen (URL o subir)</span><input id="mfImgUrl" placeholder="https://..." /><input type="file" id="mfImgFile" accept="image/*" /></label>
+							<label class="field"><span class="label">Video/Reel (URL mp4)</span><input id="mfVideoUrl" placeholder="https://...mp4" /></label>
+							<button class="btn">Guardar</button>
+							<span class="label" id="mfMsg"></span>
+						</form>
+					</div>
+					<div class="feature">
+						<div class="feature-icon">📈</div>
+						<h3>Reportes</h3>
+						<div style="display:flex; gap:8px; flex-wrap:wrap;">
+							<button class="btn" id="btnCsv">Descargar CSV</button>
+							<button class="btn" id="btnSync">Sincronizar externo</button>
+							<span id="syncMsg" class="label"></span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<footer class="site-footer">
+		<div class="container footer-grid">
+			<div>
+				<strong>Tienda Tech</strong>
+				<p>Computadoras y accesorios informáticos.</p>
+			</div>
+			<nav aria-label="Legal">
+				<a href="#">Términos</a>
+				<a href="#">Privacidad</a>
+				<a href="#">Contacto</a>
+			</nav>
+		</div>
+	</footer>
+
+	<script src="assets/site.js" defer></script>
+	<script>
+		function readOrders(){ try { return JSON.parse(localStorage.getItem('tt_orders')) || []; } catch { return []; } }
+		function readActivity(){ try { return JSON.parse(localStorage.getItem('tt_activity')) || []; } catch { return []; } }
+		document.addEventListener('DOMContentLoaded', () => {
+			const s = window.TiendaTech.getSession();
+			if (!s) { location.href = 'login.html'; return; }
+			if (s.role !== 'administrador') { location.href = 'panel.html'; return; }
+			document.getElementById('adminInfo').textContent = `Admin: ${s.name} (${s.email})`;
+			const users = (function(){ try { return JSON.parse(localStorage.getItem('tt_users')) || []; } catch { return []; } })();
+
+			const orders = readOrders();
+			const totalSales = orders.reduce((sum, o) => sum + (o.total || 0), 0);
+			document.getElementById('stSales').textContent = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'USD'}).format(totalSales);
+			document.getElementById('stOrders').textContent = String(orders.length);
+			document.getElementById('stUsers').textContent = String(users.length);
+
+			function renderAll(filter=''){
+				const f = filter.toLowerCase();
+				document.getElementById('usersList').innerHTML = users
+					.filter(u => !f || (u.name?.toLowerCase().includes(f) || u.email?.toLowerCase().includes(f) || u.role?.toLowerCase().includes(f)))
+					.map(u => `• ${u.name} — ${u.email} (${u.role}) ${u.phone?('— '+u.phone):''}`).join('<br/>') || 'Sin usuarios';
+
+				const acts = readActivity().slice().reverse()
+					.filter(a => !f || (a.event?.toLowerCase().includes(f) || a.user?.toLowerCase().includes(f) || a.detail?.toLowerCase?.().includes(f)));
+				document.getElementById('activityList').innerHTML = acts.map(a => `• [${new Date(a.at).toLocaleString()}] ${a.event} ${a.detail || ''}`).join('<br/>') || 'Sin actividad';
+
+				const ordersHtml = orders.slice().reverse()
+					.filter(o => !f || (o.user?.toLowerCase().includes(f) || o.id?.toLowerCase().includes(f)))
+					.map(o => `• ${o.id} — ${o.user} — ${new Intl.NumberFormat('es-MX',{style:'currency',currency:'USD'}).format(o.total)} — ${new Date(o.at).toLocaleString()}`)
+					.join('<br/>') || 'Sin órdenes';
+				document.getElementById('ordersList').innerHTML = ordersHtml;
+			}
+
+			renderAll('');
+			document.getElementById('adminSearch').addEventListener('input', (e) => renderAll(e.target.value));
+
+			// CSV download
+			document.getElementById('btnCsv').addEventListener('click', () => {
+				const orders = readOrders();
+				const rows = [['id','user','total','at']].concat(orders.map(o => [o.id,o.user,o.total,new Date(o.at).toISOString()]));
+				const csv = rows.map(r=>r.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(',')).join('\n');
+				const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+				const url = URL.createObjectURL(blob);
+				const a = document.createElement('a'); a.href = url; a.download = 'reporte_ordenes.csv'; a.click(); URL.revokeObjectURL(url);
+			});
+
+			// External sync (demo POST)
+			document.getElementById('btnSync').addEventListener('click', async () => {
+				try {
+					const payload = { users: (JSON.parse(localStorage.getItem('tt_users'))||[]), activity: (JSON.parse(localStorage.getItem('tt_activity'))||[]), orders: readOrders() };
+					await fetch('https://httpbin.org/post', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+					document.getElementById('syncMsg').textContent = 'Sincronizado';
+				} catch (e) { document.getElementById('syncMsg').textContent = 'Error al sincronizar'; }
+			});
+
+			// Media form
+			document.getElementById('mediaForm').addEventListener('submit', async (e) => {
+				e.preventDefault();
+				const id = document.getElementById('mfId').value.trim();
+				if (!id) return;
+				const imgUrl = document.getElementById('mfImgUrl').value.trim();
+				const videoUrl = document.getElementById('mfVideoUrl').value.trim();
+				const file = document.getElementById('mfImgFile').files[0];
+				let dataUrl;
+				if (file) { dataUrl = await new Promise(res => { const r = new FileReader(); r.onload = () => res(r.result); r.readAsDataURL(file); }); }
+				localStorage.setItem('prod_media_' + id, JSON.stringify({ image: dataUrl || imgUrl || '', video: videoUrl || '' }));
+				document.getElementById('mfMsg').textContent = 'Guardado.';
+			});
+		});
+	</script>
+</body>
+</html>

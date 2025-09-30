@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Crear cuenta - SG.TECNOLOGY</title>
+	<link rel="stylesheet" href="assets/styles.css" />
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<style>
+		.reg-wrap { display:grid; grid-template-columns: 1fr 1fr; gap:18px; align-items: stretch; }
+		.reg-hero { position:relative; background: radial-gradient(600px 300px at 30% 10%, rgba(34,197,94,.18), transparent), #0d0d0d; border:1px solid rgba(255,255,255,.06); border-radius:14px; overflow:hidden; display:grid; place-items:center; }
+		.reg-hero .orb { position:absolute; width:160px; height:160px; border-radius:999px; background: radial-gradient(circle at 30% 30%, rgba(34,197,94,.5), rgba(21,128,61,.2)); animation: float 6s ease-in-out infinite; filter: blur(1px); }
+		.reg-hero .orb:nth-child(2){ width:90px; height:90px; left:20%; top:20%; animation-delay: -2s; }
+		.reg-hero .orb:nth-child(3){ width:120px; height:120px; right:15%; bottom:18%; animation-delay: -1s; }
+		@keyframes float { 0%,100% { transform: translateY(0);} 50% { transform: translateY(-16px);} }
+		.reg-card { background: var(--card); border:1px solid rgba(255,255,255,.06); border-radius:14px; padding:16px; }
+		.preview { width:84px; height:84px; border-radius:50%; background:#0b1222; display:grid; place-items:center; overflow:hidden; border:1px solid rgba(255,255,255,.12); }
+	</style>
+</head>
+<body>
+	<header class="site-header">
+		<div class="container header-inner">
+			<a class="brand" href="index.html">SG.<span>TECNOLOGY</span></a>
+			<nav class="main-nav" aria-label="Principal">
+				<a class="nav-link" href="index.html">Inicio</a>
+				<a class="nav-link" href="servicio.html">Servicio</a>
+				<a class="nav-link" href="quienes-somos.html">Quiénes somos</a>
+				<a class="nav-link" href="contacto.html">Contacto</a>
+				<a class="nav-link hide" data-role="admin-link" href="admin.html">Admin</a>
+			</nav>
+		</div>
+	</header>
+
+	<main>
+		<section class="catalog">
+			<div class="container">
+				<h1 class="section-title">Crea tu cuenta</h1>
+				<div class="reg-wrap">
+					<div class="reg-hero">
+						<div class="orb"></div>
+						<div class="orb"></div>
+						<div class="orb"></div>
+						<div style="position:relative; text-align:center">
+							<h2>Bienvenido a SG.TECNOLOGY</h2>
+							<p class="label">Regístrate para comprar, vender y administrar productos.</p>
+						</div>
+					</div>
+					<form id="regForm" class="reg-card" style="display:grid; gap:12px;">
+						<div style="display:flex; gap:12px; align-items:center;">
+							<div class="preview" id="avatarPreview">💚</div>
+							<div class="field" style="flex:1;">
+								<span class="label">Avatar (URL o archivo)</span>
+								<input type="url" id="avatarUrl" placeholder="https://..." />
+								<input type="file" id="avatarFile" accept="image/*" />
+							</div>
+						</div>
+						<label class="field">
+							<span class="label">Nombre</span>
+							<input type="text" id="nombre" required />
+						</label>
+						<label class="field">
+							<span class="label">Correo</span>
+							<input type="email" id="correo" required />
+						</label>
+						<label class="field">
+							<span class="label">Contraseña</span>
+							<input type="password" id="password" required />
+						</label>
+						<label class="field">
+							<span class="label">Rol</span>
+							<select id="rol">
+								<option value="cliente" selected>Cliente</option>
+								<option value="vendedor">Vendedor</option>
+								<option value="administrador">Administrador</option>
+							</select>
+						</label>
+						<div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+							<button class="btn primary" type="submit">Crear cuenta</button>
+							<a class="nav-link" href="login.html">Ya tengo cuenta</a>
+						</div>
+						<span id="regMsg" class="label" aria-live="polite"></span>
+					</form>
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<footer class="site-footer">
+		<div class="container footer-grid">
+			<div>
+				<strong>SG.TECNOLOGY</strong>
+				<p>Computadoras y accesorios informáticos.</p>
+			</div>
+			<nav aria-label="Legal">
+				<a href="#">Términos</a>
+				<a href="#">Privacidad</a>
+				<a href="#">Contacto</a>
+			</nav>
+		</div>
+	</footer>
+
+	<script src="assets/site.js" defer></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+			const form = document.getElementById('regForm');
+			const msg = document.getElementById('regMsg');
+			const preview = document.getElementById('avatarPreview');
+			const avatarUrlEl = document.getElementById('avatarUrl');
+			const avatarFileEl = document.getElementById('avatarFile');
+
+			function setPreview(src){
+				if (!src) { preview.innerHTML = '💚'; return; }
+				preview.innerHTML = `<img src="${src}" alt="avatar" style="width:100%; height:100%; object-fit:cover;"/>`;
+			}
+			avatarUrlEl.addEventListener('input', () => setPreview(avatarUrlEl.value.trim()));
+			avatarFileEl.addEventListener('change', async () => {
+				const f = avatarFileEl.files[0]; if (!f) return; const url = await new Promise(res => { const r = new FileReader(); r.onload = () => res(r.result); r.readAsDataURL(f); }); setPreview(url); avatarUrlEl.value = url;
+			});
+
+			form.addEventListener('submit', (e) => {
+				e.preventDefault();
+				const name = document.getElementById('nombre').value.trim();
+				const email = document.getElementById('correo').value.trim();
+				const password = document.getElementById('password').value.trim();
+				const role = document.getElementById('rol').value;
+				const avatarUrl = avatarUrlEl.value.trim();
+				if (!name || !email || !password) { msg.textContent = 'Completa todos los campos'; msg.style.color = '#fca5a5'; return; }
+				try {
+					window.TiendaTech.registerUser({ name, email, password, role, avatarUrl });
+					msg.textContent = 'Cuenta creada. Ahora puedes iniciar sesión.';
+					msg.style.color = '#34d399';
+					setTimeout(() => location.href = 'login.html', 800);
+				} catch (err) {
+					msg.textContent = err.message || 'Error al registrar';
+					msg.style.color = '#fca5a5';
+				}
+			});
+		});
+	</script>
+</body>
+</html>
